@@ -16,6 +16,9 @@ yarn-error.log*
 .env.*
 !.env.example
 
+# local MCP config — per-developer
+.mcp.json
+
 # editor / OS
 .DS_Store
 Thumbs.db
