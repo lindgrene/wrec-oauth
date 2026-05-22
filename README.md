@@ -147,12 +147,18 @@ Routes opt into protection by returning `requiresAuth: true` from their action:
 
 After the OAuth round-trip lands at `redirect-uri`, the app shell catches the `login` event bubbling out of the single `<oauth-login>` instance (mounted in the nav) and `navigateTo`s the stashed `next` path.
 
+## Tests
+
+```sh
+npm test            # one-shot
+npm run test:watch  # watch mode
+```
+
+Uses [vitest](https://vitest.dev/) with [happy-dom](https://github.com/capricorn86/happy-dom). The suite at `test/oauth-login.test.js` covers default rendering, `login()` URL + PKCE construction, `logout()` storage clearing, session restore on mount, the full callback exchange (mocked `fetch`), state-mismatch handling, token-endpoint failure, and the slotted-button click delegation.
+
 ## Caveats / known limitations
 
 - The mock server's `redirect_uri` is exact-match. Vite serves the example at `http://localhost:5173/` (with the trailing slash) — the attribute, the value sent to `/authorize`, and the value sent to `/token` must all match exactly.
+- The mock server only accepts requests from origins listed in `ALLOWED_ORIGINS` in `example/server.js`. Both demos (`:5173`, `:5174`) are covered; any new client origin needs to be added there or the browser will block `/token`/`/userinfo` with "Failed to fetch".
 - Web Crypto (`crypto.subtle.digest`) requires a secure context. `localhost` qualifies in every modern browser; production deployments need HTTPS.
 - The mock server keeps codes and tokens in memory; restarting the server logs out all sessions.
-
-## License
-
-MIT

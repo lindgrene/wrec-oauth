@@ -8,7 +8,9 @@
     "server": "nodemon --watch example/server.js example/server.js",
     "client": "vite example --port 5173 --strictPort",
     "client:router": "vite example/router --port 5174 --strictPort",
-    "dev": "concurrently -n server,basic,router -c blue,magenta,green \"npm run server\" \"npm run client\" \"npm run client:router\""
+    "dev": "concurrently -n server,basic,router -c blue,magenta,green \"npm run server\" \"npm run client\" \"npm run client:router\"",
+    "test": "NODE_NO_WARNINGS=1 vitest run",
+    "test:watch": "NODE_NO_WARNINGS=1 vitest"
   },
   "dependencies": {
     "express": "^4.19.2",
@@ -17,7 +19,9 @@
   },
   "devDependencies": {
     "concurrently": "^9.0.0",
+    "happy-dom": "^20.9.0",
     "nodemon": "^3.1.4",
-    "vite": "^5.4.0"
+    "vite": "^5.4.0",
+    "vitest": "^4.1.7"
   }
 }
