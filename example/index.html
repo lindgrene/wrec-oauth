@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>wrec-oauth demo</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 44rem;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      line-height: 1.5;
+    }
+    h1 { font-size: 1.5rem; }
+    h2 { font-size: 1.125rem; margin-top: 2rem; }
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin-top: 0.75rem;
+    }
+    pre {
+      background: #111;
+      color: #d4d4d4;
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      overflow: auto;
+      font-size: 0.875rem;
+      max-height: 18rem;
+    }
+    code { background: #f4f4f4; padding: 0.1em 0.3em; border-radius: 3px; }
+    .muted { color: #666; font-size: 0.875rem; }
+  </style>
+  <script type="module">import "../src/oauth-login.js";</script>
+</head>
+<body>
+  <h1>wrec-oauth demo</h1>
+  <p>
+    Two <code>&lt;oauth-login&gt;</code> instances pointing at the local mock
+    OAuth server at <code>http://localhost:4000</code>. Click <strong>Log in</strong>,
+    enter any username, and you'll return to this page logged in.
+  </p>
+
+  <h2>Default rendering</h2>
+  <div class="card">
+    <oauth-login
+      id="primary"
+      client-id="demo"
+      authorize-url="http://localhost:4000/authorize"
+      token-url="http://localhost:4000/token"
+      userinfo-url="http://localhost:4000/userinfo"
+      redirect-uri="http://localhost:5173/"
+      scope="openid profile"
+      storage-prefix="oauth-primary"></oauth-login>
+  </div>
+  <p class="muted">Default content: a Log in button while signed out, "Hello, {username}!" + Log out when signed in.</p>
+
+  <h2>Slot customization</h2>
+  <div class="card">
+    <oauth-login
+      id="secondary"
+      client-id="demo"
+      authorize-url="http://localhost:4000/authorize"
+      token-url="http://localhost:4000/token"
+      userinfo-url="http://localhost:4000/userinfo"
+      redirect-uri="http://localhost:5173/"
+      scope="openid profile"
+      storage-prefix="oauth-secondary">
+      <span slot="logged-in">Welcome back, friend!</span>
+      <button slot="logged-out">Sign in with Demo</button>
+    </oauth-login>
+  </div>
+  <p class="muted">Same component, named slots override the default UI. Independent <code>storage-prefix</code> means this instance has its own session.</p>
+
+  <h2>Event log</h2>
+  <pre id="log">// listening for login / logout / error events…</pre>
+
+  <script type="module">
+    const log = document.getElementById("log");
+    let lines = [];
+    const append = (id, type, detail) => {
+      const safeDetail = JSON.parse(JSON.stringify(detail, (k, v) => k === "accessToken" && v ? `${v.slice(0, 8)}…` : v));
+      lines.push(`[${new Date().toLocaleTimeString()}] ${id} ${type} ${JSON.stringify(safeDetail)}`);
+      log.textContent = lines.slice(-50).join("\n");
+    };
+    for (const id of ["primary", "secondary"]) {
+      const el = document.getElementById(id);
+      for (const type of ["login", "logout", "error"]) {
+        el.addEventListener(type, (e) => append(id, type, e.detail));
+      }
+    }
+  </script>
+</body>
+</html>

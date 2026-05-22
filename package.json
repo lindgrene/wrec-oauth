@@ -1,0 +1,23 @@
+{
+  "name": "wrec-oauth",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "OAuth login web component built with wrec, plus a runnable demo against a local mock auth server.",
+  "scripts": {
+    "server": "nodemon --watch example/server.js example/server.js",
+    "client": "vite example --port 5173 --strictPort",
+    "client:router": "vite example/router --port 5174 --strictPort",
+    "dev": "concurrently -n server,basic,router -c blue,magenta,green \"npm run server\" \"npm run client\" \"npm run client:router\""
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "universal-router": "^10.0.3",
+    "wrec": "^0.40.3"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0",
+    "nodemon": "^3.1.4",
+    "vite": "^5.4.0"
+  }
+}
